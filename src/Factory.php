@@ -1,13 +1,24 @@
 <?php
+/**
+ * @link http://www.atomframework.net/
+ * @copyright Copyright (c) 2017 Safarov Alisher
+ * @license https://github.com/atomwares/atom-http/blob/master/LICENSE (MIT License)
+ */
 
-namespace Atom\Http\Factory;
+namespace Atom\Http;
 
-use Atom\Http\Message\Uri;
+use Atom\Http\Factory\RequestFactory;
+use Atom\Http\Factory\ResponseFactory;
+use Atom\Http\Factory\ServerRequestFactory;
+use Atom\Http\Factory\StreamFactory;
+use Atom\Http\Factory\UploadedFileFactory;
+use Atom\Http\Factory\UriFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class Factory
@@ -44,7 +55,7 @@ abstract class Factory
     /**
      * @param string $uri
      *
-     * @return Uri
+     * @return UriInterface
      */
     public static function createUri($uri = '')
     {

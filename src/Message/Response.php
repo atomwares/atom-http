@@ -1,7 +1,13 @@
 <?php
+/**
+ * @link http://www.atomframework.net/
+ * @copyright Copyright (c) 2017 Safarov Alisher
+ * @license https://github.com/atomwares/atom-http/blob/master/LICENSE (MIT License)
+ */
 
 namespace Atom\Http\Message;
 
+use Atom\Http\Message;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
