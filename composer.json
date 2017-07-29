@@ -31,7 +31,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Atom\\Http": "src/"
+      "Atom\\Http\\": "src/"
     }
   }
 }
