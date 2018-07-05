@@ -5,13 +5,13 @@
  * @license https://github.com/atomwares/atom-http/blob/master/LICENSE (MIT License)
  */
 
-namespace Atom\Http\Middleware;
+namespace Atom\Http\Server;
 
 use Atom\Http\Factory;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use UnexpectedValueException;
 
 /**
@@ -24,27 +24,25 @@ class CallableMiddleware implements MiddlewareInterface
     /**
      * @var callable
      */
-    private $handler;
+    private $middleware;
 
     /**
      * CallableMiddleware constructor.
-     *
-     * @param callable $handler
+     * @param callable $middleware
      */
-    public function __construct(callable $handler)
+    public function __construct(callable $middleware)
     {
-        $this->handler = $handler;
+        $this->middleware = $middleware;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     *
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = ($this->handler)($request, $delegate);
+        $response = ($this->middleware)($request, $handler);
 
         if (is_scalar($response) || (is_object($response) && method_exists($response, '__toString'))) {
             $response = Factory::createResponse()

@@ -40,7 +40,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
         $uploadedFiles = [];
 
         if (isset($files['tmp_name']) && ! is_array($files['tmp_name'])) {
-            $uploadedFiles[] = new UploadedFile(
+            $uploadedFiles[] = $this->createUploadedFile(
                 $files['tmp_name'],
                 $files['size'],
                 $files['error'],
@@ -49,7 +49,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
             );
         } elseif (isset($files['tmp_name']) && is_array($files['tmp_name'])) {
             foreach ($files['tmp_name'] as $key => $file) {
-                $uploadedFiles[] = new UploadedFile(
+                $uploadedFiles[] = $this->createUploadedFile(
                     $file,
                     $files['size'][$key],
                     $files['error'][$key],

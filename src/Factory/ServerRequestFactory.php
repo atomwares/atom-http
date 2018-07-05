@@ -12,6 +12,7 @@ use Atom\Http\Message\Uri;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class ServerRequestFactory
@@ -39,7 +40,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public function createServerRequest($method, $uri)
     {
-        if (is_string($uri)) {
+        if (! $uri instanceof UriInterface) {
             if (! $this->uriFactory) {
                 $this->uriFactory = new UriFactory();
             }

@@ -5,52 +5,50 @@
  * @license https://github.com/atomwares/atom-http/blob/master/LICENSE (MIT License)
  */
 
-namespace Atom\Http\Middleware;
+namespace Atom\Http\Server;
 
 use Atom\Http\Factory\ResponseFactory;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use InvalidArgumentException;
 
 /**
- * Class Delegate
+ * Class RequestHandler
  *
  * @package Atom\Middleware
  */
-class Delegate implements DelegateInterface
+class RequestHandler implements RequestHandlerInterface
 {
     /**
-     * @var CallableMiddleware|MiddlewareInterface|null
+     * @var CallableMiddleware|MiddlewareInterface
      */
     protected $middleware;
     /**
-     * @var DelegateInterface
+     * @var RequestHandlerInterface
      */
-    protected $next;
+    protected $nextHandler;
     /**
      * @var ResponseFactory
      */
     protected $responseFactory;
 
     /**
-     * Delegate constructor.
+     * RequestHandler constructor.
      *
-     * @param MiddlewareInterface|callable|null $middleware
-     * @param DelegateInterface|null $next
+     * @param MiddlewareInterface|callable $middleware
+     * @param RequestHandlerInterface $nextHandler
      */
     public function __construct(
-        $middleware = null,
-        DelegateInterface $next = null
+        $middleware,
+        RequestHandlerInterface $nextHandler
     ) {
         if (is_callable($middleware)) {
             $middleware = new CallableMiddleware($middleware);
         }
 
-        if ($middleware !== null &&
-            ! $middleware instanceof MiddlewareInterface
-        ) {
+        if ($middleware !== null && ! $middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid middleware provided; must be an instance of %s, received %s',
                 MiddlewareInterface::class,
@@ -59,29 +57,15 @@ class Delegate implements DelegateInterface
         }
 
         $this->middleware = $middleware;
-        $this->next = $next;
+        $this->nextHandler = $nextHandler;
     }
 
     /**
      * @param ServerRequestInterface $request
-     *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if (! $this->responseFactory) {
-            $this->responseFactory = new ResponseFactory();
-        }
-
-        $response = $this->responseFactory->createResponse();
-
-        if ($this->middleware && $this->next) {
-            $response = $this->middleware->process(
-                $request,
-                $this->next
-            );
-        }
-
-        return $response;
+        return $this->middleware->process($request, $this->nextHandler);
     }
 }

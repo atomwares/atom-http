@@ -26,7 +26,7 @@ class StreamFactory implements StreamFactoryInterface
         fwrite($resource, $content);
         rewind($resource);
 
-        return new Stream($resource);
+        return $this->createStreamFromResource($resource);
     }
 
     /**
@@ -34,7 +34,7 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromFile($filename, $mode = 'r')
     {
-        return new Stream(fopen($filename, $mode));
+        return $this->createStreamFromResource(fopen($filename, $mode));
     }
 
     /**
